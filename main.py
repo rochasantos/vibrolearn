@@ -16,7 +16,8 @@ def run(model, verbose=False):
     combination = 0
     segment_length = 2048
     list_of_X_y = single_channel_X_y_DE_FE_48k(combination, segment_length)
-    scores = performance(model, list_of_X_y, list_of_metrics=list_of_metrics, verbose=verbose)
+    scores = performance(model, list_of_X_y, list_of_metrics=list_of_metrics, 
+                         holdout_indices=[[0, 1, 2, 3, 4, 5, 6, 7], [8]], verbose=verbose)
     return scores
 
 
