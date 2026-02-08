@@ -126,7 +126,7 @@ def target_array(value, length):
     return np.full(length, value, dtype=target_type)
 
 
-def get_X_y(registers, raw_dir_path, channels_columns, segment_length, load_acquisition_func):
+def get_X_y(registers, raw_dir_path, channels_columns, segment_length, load_acquisition_func, train=False):
     X_list = []
     y_list = []
     if len(registers) == 0:
@@ -138,6 +138,87 @@ def get_X_y(registers, raw_dir_path, channels_columns, segment_length, load_acqu
     X = np.concatenate(X_list, axis=0)
     y = np.concatenate(y_list, axis=0)
     return X, y
+
+# from augmentation.frequency_domain import make_pairs_same_condition_diff_severity, augment_segments_mode3
+# from augmentation.time_domain import make_pairs_same_condition_same_load, augment_time_mix_blocks, augment_segment_dam
+
+# def get_X_y(registers, raw_dir_path, channels_columns, segment_length, load_acquisition_func, train=False):
+#     X_list = []
+#     y_list = []
+
+#     if len(registers) == 0:
+#         return np.empty((0, segment_length, 1)), np.empty((0,), dtype='U10')
+
+#     for register in registers:
+#         segments, targets = extract_segments_and_targets(
+#             raw_dir_path, channels_columns, segment_length, load_acquisition_func, register
+#         )
+
+#         X_list.append(segments)
+#         y_list.append(targets)
+
+#         # DAM augmentation: add one augmented version for each segment
+#         # if train and len(segments) > 0:
+#         #     segments_dam = np.empty_like(segments, dtype=np.float32)
+#         #     for i in range(len(segments)):
+#         #         # Apply DAM to a single 1D segment
+#         #         segments_dam[i, :, 0] = augment_segment_dam(segments[i, :, 0])
+#         #     X_list.append(segments_dam)
+#         #     y_list.append(targets)
+
+#     if train:
+#         pair_of_registers = make_pairs_same_condition_diff_severity(registers)
+#         for reg_a, reg_b in pair_of_registers:
+#             segments_a, targets_a = extract_segments_and_targets(raw_dir_path, channels_columns, segment_length, load_acquisition_func, reg_a)
+#             segments_b, targets_b = extract_segments_and_targets(raw_dir_path, channels_columns, segment_length, load_acquisition_func, reg_b)
+
+#             segments = augment_segments_mode3(segments_a, segments_b)
+#             targets = targets_b if len(targets_a) > len(targets_b) else targets_a
+
+#             X_list.append(segments)
+#             y_list.append(targets)
+
+#         pair_of_registers_td = make_pairs_same_condition_same_load(registers)
+#         for reg_a, reg_b in pair_of_registers_td:
+#             segments_a, targets_a = extract_segments_and_targets(raw_dir_path, channels_columns, segment_length, load_acquisition_func, reg_a)
+#             segments_b, targets_b = extract_segments_and_targets(raw_dir_path, channels_columns, segment_length, load_acquisition_func, reg_b)
+
+#             n = min(len(segments_a), len(segments_b))
+#             if n == 0:
+#                 continue
+
+#             seg_len = segments_a.shape[1]
+
+#             mixed1 = np.empty((n, seg_len, 1), dtype=np.float32)
+#             mixed2 = np.empty((n, seg_len, 1), dtype=np.float32)
+
+#             for i in range(n):
+#                 x1 = segments_a[i, :, 0]
+#                 x2 = segments_b[i, :, 0]
+
+#                 y1, y2 = augment_time_mix_blocks(x1, x2)
+
+#                 mixed1[i, :, 0] = y1[:seg_len]
+#                 mixed2[i, :, 0] = y2[:seg_len]
+
+#             targets = targets_b if len(targets_a) > len(targets_b) else targets_a
+#             targets = targets[:n]
+
+#             X_list.append(mixed1)
+#             y_list.append(targets)
+
+#             X_list.append(mixed2)
+#             y_list.append(targets)
+
+#     X = np.concatenate(X_list, axis=0)
+#     y = np.concatenate(y_list, axis=0)
+#     return X, y
+
+
+
+
+
+# ========================================================================
 
 
 def extract_segments_and_targets(raw_dir_path, channels_columns, segment_length, load_acquisition_func, register):
@@ -193,10 +274,11 @@ def get_train_test_split(list_of_X_y, test_fold_index):
     return X_train, y_train, X_test, y_test
 
 
-def get_list_of_X_y(list_of_folds, raw_dir_path, channels_columns, segment_length, load_acquisition_func):
+def get_list_of_X_y(list_of_folds, raw_dir_path, channels_columns, segment_length, load_acquisition_func, train=True):
     list_of_X_y = []
     for fold in list_of_folds:
-        X, y = get_X_y(fold, raw_dir_path=raw_dir_path, channels_columns=channels_columns, segment_length=segment_length, load_acquisition_func=load_acquisition_func)
+        X, y = get_X_y(fold, raw_dir_path=raw_dir_path, channels_columns=channels_columns, 
+                       segment_length=segment_length, load_acquisition_func=load_acquisition_func, train=train)
         list_of_X_y.append((X, y))
     return list_of_X_y
 
