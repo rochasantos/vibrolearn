@@ -263,7 +263,7 @@ def get_list_of_X_y(list_of_folds, raw_dir_path, channels_columns, segment_lengt
     list_of_X_y = []
     for fold in list_of_folds:
         X, y = get_X_y(fold, raw_dir_path=raw_dir_path, channels_columns=channels_columns, 
-                       segment_length=segment_length, load_acquisition_func=load_acquisition_func, train=train)
+                       segment_length=segment_length, load_acquisition_func=load_acquisition_func)
         list_of_X_y.append((X, y))
     return list_of_X_y
 

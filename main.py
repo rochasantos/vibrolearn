@@ -1,54 +1,87 @@
-<<<<<<< HEAD
 from pprint import pprint
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import SelectKBest, SequentialFeatureSelector, mutual_info_classif, f_classif, SelectPercentile, VarianceThreshold, SelectFromModel, RFE
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.pipeline import make_pipeline
 from feature.extraction import WaveletFeatures
+from feature.wp import WPDFeatureSelector
 from utils.metrics import f1_macro
-=======
-from dataset.cwru.rauber_loca_et_al import single_channel_X_y_DE_FE_12k
-from dataset.cwru.sehri_et_al import single_channel_X_y_DE_FE_48k
-from assesment.crossvalidation import performance
-from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
-from estimator.WPRF import WPRF as Estimator
-
->>>>>>> 0b48f41d6b0eea3352b7411cdac0b62d995b3371
-
+from feature.features_selector import (WPDFeatureSelectorMI, WPDFeatureSelectorANOVA, BaseFeatureSelector, 
+WPDFeatureSelectorRFStability, WPDFeatureSelectorCorrMI, WPDFeatureSelectorPermutation, WPDFeatureSelectorRFImportance)
 model = make_pipeline(WaveletFeatures(), RandomForestClassifier())
 
+# model = make_pipeline(
+#     WaveletFeatures(),
+#     SelectKBest(f_classif, k=8),
+#     RandomForestClassifier(n_estimators=200, random_state=0)
+# )
 list_of_metrics = [accuracy_score, f1_macro, confusion_matrix]
 
-def run_sehri_experiment():
-    from dataset.cwru.sehri_et_al import run_papers_experiment
-    scores = run_papers_experiment(model, list_of_metrics)
+""" CWRU without augmentation """
+# def run_sehri_experiment():
+#     from dataset.cwru.sehri_et_al import run_papers_experiment
+#     scores = run_papers_experiment(model, list_of_metrics)
+#     print("Scores for papers experiment:")
+#     pprint(scores)
+
+""" CWRU with augmentation """
+def run_sehri_experiment_aug():
+    from dataset.cwru.sehri_et_al_aug import run_papers_experiment
+    scores = run_papers_experiment(model, list_of_metrics, mixes_per_pair=5, augment=True)
     print("Scores for papers experiment:")
     pprint(scores)
-
-def run_inspired_experiment():
-    from dataset.cwru.sehri_et_al import run_papers_inspired_experiment
-    scores = run_papers_inspired_experiment(model, list_of_metrics)
-    print("Scores for papers inspired experiment:")
-    pprint(scores)
-
-def run_proposed_experiment():
-    from dataset.cwru.sehri_et_al import run_proposed_experiment
-    scores = run_proposed_experiment(model, list_of_metrics)
-    print("Scores for proposed experiment:")
-    pprint(scores)
-
-def run(model, verbose=False):
-    combination = 0
-    segment_length = 2048
-    list_of_X_y = single_channel_X_y_DE_FE_48k(combination, segment_length)
-    scores = performance(model, list_of_X_y, list_of_metrics=list_of_metrics, verbose=verbose)
     return scores
 
+""" CWRU with augmentation and CNN1D """
+# def run_sehri_experiment_aug():
+#     from dataset.cwru.sehri_et_al_aug import run_papers_experiment    
+#     from estimator.cnn1d import SklearnCNN1DClassifier
+#     model = SklearnCNN1DClassifier(
+#         epochs=20,
+#         batch_size=64,
+#         lr=1e-4,
+#         seed=0,
+#         verbose=True,
+#     )
+#     scores = run_papers_experiment(model, list_of_metrics, mixes_per_pair=5, augment=True)
+#     print("Scores for papers experiment:")
+#     pprint(scores)
+#     return scores
+
+""" UORED """
+# def run_sehri_experiment_aug():
+#     from dataset.uored.experimenter import run_papers_experiment
+#     scores = run_papers_experiment(
+#         model,
+#         list_of_metrics,
+#         mixes_per_pair=1,
+#         augment=True,
+#         channel="vibration",   # or "acoustic"
+#     )
+#     print("Scores for papers experiment:")
+#     pprint(scores)
+#     return scores
+
+""" Papers inspired experiment """
+# def run_inspired_experiment():
+#     from dataset.cwru.sehri_et_al import run_papers_inspired_experiment
+#     scores = run_papers_inspired_experiment(model, list_of_metrics)
+#     print("Scores for papers inspired experiment:")
+#     pprint(scores)
+
+""" Proposed experiment """
+# def run_proposed_experiment():
+#     from dataset.cwru.sehri_et_al import run_proposed_experiment
+#     scores = run_proposed_experiment(model, list_of_metrics)
+#     print("Scores for proposed experiment:")
+#     pprint(scores)
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-    run_sehri_experiment()
-    # run_inspired_experiment()
-    # run_proposed_experiment()
-=======
-    result  = run(model, verbose=True)
->>>>>>> 0b48f41d6b0eea3352b7411cdac0b62d995b3371
+    accuracies = []
+    f1_macros = []
+    for i in range(1):
+        result = run_sehri_experiment_aug()
+        accuracies.append(result['accuracy_score'])
+        f1_macros.append(result['f1_macro'])
+    print("Average accuracy over 5 runs:", sum(accuracies) / len(accuracies))
+    print("Average f1_macro over 5 runs:", sum(f1_macros) / len(f1_macros))

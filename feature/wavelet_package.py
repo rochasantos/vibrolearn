@@ -3,14 +3,21 @@ import numpy as np
 import pywt
 from sklearn.base import TransformerMixin
 
-
-def Energy(coeffs, k):
-      return np.sqrt(np.sum(np.array(coeffs[-k]) ** 2)) / len(coeffs[-k])
-
+def Energy(node_data):
+    return np.sqrt(np.sum(np.asarray(node_data) ** 2)) / len(node_data)
 
 def getEnergy(wp):
-  coefs = np.asarray([n.data for n in wp.get_leaf_nodes(True)])
-  return np.asarray([Energy(coefs,i) for i in range(2**wp.maxlevel)])
+    leaf_nodes = wp.get_leaf_nodes(True)
+    return np.asarray([Energy(node.data) for node in leaf_nodes], dtype=np.float32)
+
+
+# def Energy(coeffs, k):
+#       return np.sqrt(np.sum(np.array(coeffs[-k]) ** 2)) / len(coeffs[-k])
+
+
+# def getEnergy(wp):
+#   coefs = np.asarray([n.data for n in wp.get_leaf_nodes(True)])
+#   return np.asarray([Energy(coefs,i) for i in range(2**wp.maxlevel)])
 
 
 def extract_features(X, wavelet='db4', mode='symmetric', maxlevel=4):
