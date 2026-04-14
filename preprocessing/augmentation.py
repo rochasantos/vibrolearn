@@ -26,8 +26,10 @@ def augment_acquisition(list_of_registers):
 
 def aggregate_condition_data(list_of_registers, conditions, load):
     X_condition, y_condition = [], []
-    for condition in conditions:        
+    for condition in conditions:
         condition_registers = filter_registers_by_key_value_sequence(list_of_registers, [("condition", [condition]), ("load", [load])])
+        if len(condition_registers) == 0:
+            continue
         X_severity, y_severity = mix_severity_data(condition_registers)
         X_condition.append(X_severity)
         y_condition.append(y_severity)

@@ -22,14 +22,11 @@ if __name__ == "__main__":
         parser.print_help()
     
     steps = []
-    pipeline = None
+    pipeline = Pipeline
 
     if args.augmentation:
         print("Using data augmentation")
         pipeline = AugmentedPipeline
-    elif not args.augmentation:
-        print("No data augmentation specified, using default (no augmentation)")
-        pipeline = Pipeline
 
 
     if args.feature_extraction:
