@@ -6,12 +6,13 @@ from sklearn.neighbors import KNeighborsClassifier
 
 from estimators.pipeline import Pipeline
 from experiment.assesment import print_scores_list, run_experiment
-from feature.wavelet_package import WaveletPackage
 from feature.extraction import *
+from preprocessing.augmentation import AugmentedPipeline
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run vibrolearn with the following options:")
+    parser.add_argument("-a", "--augmentation", action="store_true", help="Whether to use data augmentation in the experiments")
     parser.add_argument("-f", "--feature_extraction", type=str, help="The feature extraction method to use for the experiments (choices: FlattenFeatures, StatisticalFeatures, HeterogeneousFeatures, WaveletFeatures)")
     parser.add_argument("-c", "--classifier", type=str, help="The classifier to use for the experiments (choices: RandomForestClassifier, KNeighborsClassifier)")
     parser.add_argument("-e", "--experimental_setup", type=str, help="The experimental setup file to run (mandatory)")
@@ -21,14 +22,23 @@ if __name__ == "__main__":
         parser.print_help()
     
     steps = []
+    pipeline = None
+
+    if args.augmentation:
+        print("Using data augmentation")
+        pipeline = AugmentedPipeline
+    elif not args.augmentation:
+        print("No data augmentation specified, using default (no augmentation)")
+        pipeline = Pipeline
+
 
     if args.feature_extraction:
         print(f"Using feature extraction method: {args.feature_extraction}")
         featextraction_method = eval(args.feature_extraction)()
         steps.append(("feature_extraction", featextraction_method))
     elif not args.feature_extraction:
-        print("No feature extraction method specified, using default (WaveletPackage)")
-        featextraction_method = WaveletPackage()
+        print("No feature extraction method specified, using default (WaveletFeatures)")
+        featextraction_method = WaveletFeatures()
         steps.append(("feature_extraction", featextraction_method))
         
     if args.classifier:
@@ -36,13 +46,13 @@ if __name__ == "__main__":
         print(f"Using classifier: {model.__class__.__name__}")
         steps.append(("classifier", model))
     elif not args.classifier:
-        model = RandomForestClassifier(random_state=42)
+        model = RandomForestClassifier(random_state=42, n_estimators=300)
         print("No classifier specified, using default (RandomForestClassifier)")
         steps.append(("classifier", model))
 
     if args.experimental_setup:
         print(f"Running experimental setup: {args.experimental_setup}")
-        pipe = Pipeline(steps)
+        pipe = pipeline(steps)
         experimental_setup = json.load(open(args.experimental_setup, "r"))
         list_of_scores = run_experiment(pipe, experimental_setup)
         print_scores_list(list_of_scores)
