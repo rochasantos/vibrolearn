@@ -1,4 +1,4 @@
-from dataset.utils import get_X_y, get_folds, load_matlab_acquisition
+from dataset.utils import get_folds
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 
 
@@ -19,55 +19,41 @@ def train_test_split(filters, test_fold_key):
     return train_filters, test_filter
 
 
-def holdout(model, filters, test_fold_key, list_of_metrics):
-    train_filters, test_filter = train_test_split(filters, test_fold_key)
-    model.train(train_filters)
+def holdout(model, experimental_setup, combination_key, test_fold_key, list_of_metrics):
+    folds = get_folds(experimental_setup, combination_key, experimental_setup["config_file"])
+    exp_setup = experimental_setup.copy()
+    del exp_setup["setup"]
+    train_filters, test_filter = train_test_split(folds, test_fold_key)
+    model.train(train_filters, exp_setup)
     scores = model.evaluate(test_filter, list_of_metrics)
     return scores
 
 
-def cross_validation(model, folds, list_of_metrics):
+def multiple_holdout(model, experimental_setup, list_of_metrics):
     scores = {}
-    for test_fold_key in folds:
-        fold_scores = holdout(model, folds, test_fold_key, list_of_metrics)
-        scores[test_fold_key] = fold_scores
+    for combination_key in experimental_setup["setup"]:
+        scores[combination_key] = holdout(model, experimental_setup, combination_key,  test_fold_key="testing", list_of_metrics=list_of_metrics)
     return scores
 
 
-def load_function(registers, experimental_setup):
-    raw_dir_path=experimental_setup["raw_dir_path"]
-    channels_columns=experimental_setup["channels_columns"]
-    segment_length=experimental_setup["segment_length"]
-    load_acquisition_func=eval(experimental_setup["load_acquisition_func"])
-    X, y = get_X_y(registers, 
-                   raw_dir_path=raw_dir_path, 
-                   channels_columns=channels_columns, 
-                   segment_length=segment_length, 
-                   load_acquisition_func=load_acquisition_func)
-    return X, y
+def cross_validation(model, experimental_setup, list_of_metrics):
+    scores = {}
+    for combination_key in experimental_setup["setup"]:
+        folds = get_folds(experimental_setup, combination_key, experimental_setup["config_file"])
+        for test_fold_key in folds:
+            fold_scores = holdout(model, experimental_setup, combination_key, test_fold_key, list_of_metrics)
+            scores[test_fold_key] = fold_scores
+    return scores
 
 
 def run_experiment(model, experimental_setup):
-    model.set_load_function(lambda registers: load_function(registers, experimental_setup))
     list_of_metrics = get_list_of_metrics()
     scores = {}
     if experimental_setup["type"] == "train_test_split":
-        perform_holdout_experiment(model, experimental_setup, list_of_metrics, scores)
+        scores = multiple_holdout(model, experimental_setup, list_of_metrics)
     elif experimental_setup["type"] == "cross_validation":
-        perform_experimental_cross_validation(model, experimental_setup, list_of_metrics, scores)
+        scores = scores | cross_validation(model, experimental_setup,  list_of_metrics)
     return scores
-
-
-def perform_holdout_experiment(model, experimental_setup, list_of_metrics, scores):
-    for combination_key in experimental_setup["setup"]:
-        folds = get_folds(experimental_setup["setup"], combination_key, experimental_setup["config_file"])
-        scores[combination_key] = holdout(model, folds, test_fold_key="testing", list_of_metrics=list_of_metrics)
-
-
-def perform_experimental_cross_validation(model, experimental_setup, list_of_metrics, scores):
-    for combination_key in experimental_setup["setup"]:
-        folds = get_folds(experimental_setup["setup"], combination_key, experimental_setup["config_file"])
-        scores = scores | cross_validation(model, folds, list_of_metrics)
 
 
 def print_dict_of_scores(scores):

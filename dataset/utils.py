@@ -229,10 +229,10 @@ def get_fold(fold_filters, config_file):
     return fold
 
 
-def get_folds(combinations, combination_key, config_file):
+def get_folds(experimental_setup, combination_key, config_file):
     folds = {}
-    for fold_key in combinations[combination_key]:
-        fold = get_fold(combinations[combination_key][fold_key], config_file=config_file)
+    for fold_key in experimental_setup["setup"][combination_key]:
+        fold = get_fold(experimental_setup["setup"][combination_key][fold_key], config_file=config_file)
         folds[fold_key] = fold
     return folds
 
