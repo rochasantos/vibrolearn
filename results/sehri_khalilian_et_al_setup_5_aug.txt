@@ -1,0 +1,4 @@
+Using data augmentation
+No feature extraction method specified, using default (WaveletFeatures)
+No classifier specified, using default (RandomForestClassifier)
+Running experimental setup: dataset/cwru/sehri_khalilian_et_al_setup.json

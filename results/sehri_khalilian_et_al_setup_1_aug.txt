@@ -1,0 +1,172 @@
+Using data augmentation
+No feature extraction method specified, using default (WaveletFeatures)
+No classifier specified, using default (RandomForestClassifier)
+Running experimental setup: dataset/cwru/sehri_khalilian_et_al_setup.json
+### domains_1:
+--------------------
+-- accuracy_score --
+0.5471698113207547
+
+-- f1_macro --
+0.47740343719692907
+
+-- confusion_matrix --
+[[196  41   0   1]
+ [ 18 215   0   5]
+ [238   0   0   0]
+ [ 62  67   0 111]]
+
+### domains_2:
+--------------------
+-- accuracy_score --
+0.5788086452293094
+
+-- f1_macro --
+0.5495556532364767
+
+-- confusion_matrix --
+[[ 24 451   0   0]
+ [ 15 449   0   9]
+ [ 52   0 420   0]
+ [135 137   0 205]]
+
+### domains_3:
+--------------------
+-- accuracy_score --
+0.5239096163951655
+
+-- f1_macro --
+0.51019795633104
+
+-- confusion_matrix --
+[[ 64 389   0  22]
+ [ 21 259   0 199]
+ [  0   0 473   0]
+ [137 138   0 201]]
+
+### domains_4:
+--------------------
+-- accuracy_score --
+0.6363636363636364
+
+-- f1_macro --
+0.5986311332050085
+
+-- confusion_matrix --
+[[ 60 400   0  15]
+ [  0 477   0   0]
+ [  0   0 474   0]
+ [133 144   0 200]]
+
+### domains_5:
+--------------------
+-- accuracy_score --
+0.4989495798319328
+
+-- f1_macro --
+0.4164325842696629
+
+-- confusion_matrix --
+[[  0 239   0   0]
+ [  0   0   0 238]
+ [  0   0 238   0]
+ [  0   0   0 237]]
+
+### domains_6:
+--------------------
+-- accuracy_score --
+0.4989495798319328
+
+-- f1_macro --
+0.4164325842696629
+
+-- confusion_matrix --
+[[  0 239   0   0]
+ [  0   0   0 238]
+ [  0   0 238   0]
+ [  0   0   0 237]]
+
+### domains_7:
+--------------------
+-- accuracy_score --
+0.4989495798319328
+
+-- f1_macro --
+0.4164325842696629
+
+-- confusion_matrix --
+[[  0 239   0   0]
+ [  0   0   0 238]
+ [  0   0 238   0]
+ [  0   0   0 237]]
+
+### domains_8:
+--------------------
+-- accuracy_score --
+0.4989495798319328
+
+-- f1_macro --
+0.4164325842696629
+
+-- confusion_matrix --
+[[  0 239   0   0]
+ [  0   0   0 238]
+ [  0   0 238   0]
+ [  0   0   0 237]]
+
+### domains_9:
+--------------------
+-- accuracy_score --
+0.38491048593350385
+
+-- f1_macro --
+0.29111776719776306
+
+-- confusion_matrix --
+[[231  12   0   0]
+ [ 57   5   0   0]
+ [  0   0  65 173]
+ [154  85   0   0]]
+
+### domains_10:
+--------------------
+-- accuracy_score --
+0.541038525963149
+
+-- f1_macro --
+0.4130879206588861
+
+-- confusion_matrix --
+[[474   0   0   0]
+ [348  23   0   1]
+ [  0   0 472   0]
+ [473   0   0   0]]
+
+### domains_11:
+--------------------
+-- accuracy_score --
+0.49815692469720907
+
+-- f1_macro --
+0.3800310653295961
+
+-- confusion_matrix --
+[[467   0   0   8]
+ [469   6   0   1]
+ [  0   0 473   0]
+ [475   0   0   0]]
+
+### domains_12:
+--------------------
+-- accuracy_score --
+0.507635597682991
+
+-- f1_macro --
+0.3973386082924236
+
+-- confusion_matrix --
+[[469   0   0   6]
+ [435  21   1  16]
+ [  0   0 474   0]
+ [477   0   0   0]]
+
