@@ -1,17 +1,29 @@
 Using data augmentation
 No feature extraction method specified, using default (WaveletFeatures)
-Using classifier: RandomForestClassifier
+No classifier specified, using default (RandomForestClassifier)
 Running experimental setup: dataset/cwru/sehri_et_al_papers_setup.json
-### testing:
+### holdout_0:
 --------------------
+-- load_data_time --
+0.07653617858886719
+
+-- data_augmentation_time --
+4.80912446975708
+
+-- training_time --
+11.480408906936646
+
+-- prediction_time --
+0.1696927547454834
+
 -- accuracy_score --
-0.7388268156424581
+0.7318435754189944
 
 -- f1_macro --
-0.724939069435464
+0.7225948515318397
 
 -- confusion_matrix --
-[[197  40   1]
- [ 10 223   5]
- [ 56  75 109]]
+[[213  25   0]
+ [ 40 194   4]
+ [ 65  58 117]]
 

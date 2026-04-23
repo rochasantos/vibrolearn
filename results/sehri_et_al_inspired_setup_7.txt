@@ -1,42 +1,69 @@
 No feature extraction method specified, using default (WaveletFeatures)
-Using classifier: RandomForestClassifier
+No classifier specified, using default (RandomForestClassifier)
 Running experimental setup: dataset/cwru/sehri_et_al_inspired_setup.json
 ### fold_0_0:
 --------------------
+-- load_data_time --
+0.07263946533203125
+
+-- training_time --
+4.81152868270874
+
+-- prediction_time --
+1.28074312210083
+
 -- accuracy_score --
-0.2732010422930447
+0.28863499699338546
 
 -- f1_macro --
-0.16147651772336655
+0.1584196993049206
 
 -- confusion_matrix --
-[[  72    4 1590]
+[[  32    1 1633]
  [   0    0 1660]
- [ 372    0 1291]]
+ [ 255    0 1408]]
 
 ### fold_0_1:
 --------------------
+-- load_data_time --
+0.05628800392150879
+
+-- training_time --
+5.110810995101929
+
+-- prediction_time --
+1.3425986766815186
+
 -- accuracy_score --
-0.3483241408570216
+0.34747560458209586
 
 -- f1_macro --
-0.2126028645213752
+0.2058282664538944
 
 -- confusion_matrix --
-[[1541    4  122]
- [1264   98   21]
- [1658    3    3]]
+[[1555    6  106]
+ [1273   80   30]
+ [1656    5    3]]
 
 ### fold_0_2:
 --------------------
+-- load_data_time --
+0.05628800392150879
+
+-- training_time --
+5.110810995101929
+
+-- prediction_time --
+1.3425986766815186
+
 -- accuracy_score --
-0.4928
+0.487
 
 -- f1_macro --
-0.46621127395088074
+0.4613576409045945
 
 -- confusion_matrix --
-[[ 312 1307   44]
- [  82 1370  215]
- [ 442  446  782]]
+[[ 318 1303   42]
+ [  98 1362  207]
+ [ 452  463  755]]
 
