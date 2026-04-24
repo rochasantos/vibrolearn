@@ -1,29 +1,7 @@
-from estimators.pipeline import Pipeline, load_function, timed_fit
 from dataset.utils import filter_registers_by_key_value_sequence, get_acquisition_data, get_values_by_key, load_matlab_acquisition, prepare_segments_and_targets
 import numpy as np
-from timed_decorator.simple_timed import timed
 
 
-class AugmentedPipeline(Pipeline):
-    def train(self, list_of_registers, experimental_setup):
-        self.experimental_setup = experimental_setup
-        (X, y), load_time = load_augmented_data(list_of_registers, self.experimental_setup)
-        self.scores["load_data_time"] = load_time
-        _, training_time = timed_fit(self.pipe, X, y)
-        self.scores["training_time"] = training_time
-        return self
-
-
-@timed(return_time=True, use_seconds=True)
-def load_augmented_data(list_of_registers, experimental_setup):
-        (X_aug, y_aug), _ = get_agumented_data(list_of_registers, experimental_setup, 3)
-        (X_ori, y_ori), _ = load_function(list_of_registers, experimental_setup)
-        X = np.concatenate([X_ori, X_aug], axis=0)
-        y = np.concatenate([y_ori, y_aug], axis=0)
-        return X, y
-
-
-@timed(return_time=True, use_seconds=True)
 def get_agumented_data(list_of_registers, experimental_setup, repetitions):
     X, y = [], []
     for _ in range(repetitions):
@@ -98,3 +76,4 @@ def mix_two_acquisitions(acq1, acq2):
     xf1, xf2 = np.fft.rfft(acq1, axis=0), np.fft.rfft(acq2, axis=0)
     xf_mix = (xf1 + xf2)
     return np.fft.irfft(xf_mix, n=max(acq1.shape[0], acq2.shape[0]), axis=0)
+
