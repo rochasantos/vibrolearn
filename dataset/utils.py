@@ -9,21 +9,18 @@ import rarfile #need install unrar
 
 def download_file_from_register(raw_dir_path, register):
     os.makedirs(raw_dir_path, exist_ok=True)
-    
-    filename = register['filename'].strip()
-    file_url = urllib.parse.urljoin(register['base_url'].strip(), filename)
-    file_path = os.path.join(raw_dir_path, filename)
-    is_rar = filename.lower().endswith('.rar')
+    file_url = register['url'].strip()
+    acquisition_file = register['acquisition_file'].strip()
+    if not is_acquisition_file_downloaded(acquisition_file, raw_dir_path):
+        download_with_retries(file_url, raw_dir_path)
+        if file_url.lower().endswith('.rar'):
+            extract_rar(file_url, raw_dir_path)
 
-    if is_rar and is_rar_already_extracted(filename, raw_dir_path):
-        return
 
-    download_with_retries(file_url, raw_dir_path, file_path)
-    
-    if is_rar:
-        extract_and_delete_rar(file_path, raw_dir_path)
-    else:
-        print(f"File ready and verified: {file_path}.")
+def is_acquisition_file_downloaded(acquisition_file, folder_path):
+    # Check if the acquisition file exists in the specified folder
+    file_path = os.path.join(folder_path, acquisition_file)
+    return os.path.isfile(file_path)
 
 
 def is_file_downloaded(url, folder_path):
@@ -49,32 +46,22 @@ def is_file_size_same(url, file_path):
     return local_file_size == url_file_size
 
 
-def extract_and_delete_rar(rar_path, extract_to):
-    print(f"Extracting {rar_path} ...")
-    with rarfile.RarFile(rar_path) as rf:
-        rf.extractall(extract_to)
-    os.remove(rar_path)
-    print(f"Deleted {rar_path}")
-    
-
-def is_rar_already_extracted(filename, raw_dir_path):
-    bearing_name = os.path.splitext(filename)[0]
-    extracted_dir = os.path.join(raw_dir_path, bearing_name)
-    if os.path.isdir(extracted_dir):
-        print(f"Already extracted: {extracted_dir}. Skipping.")
-        return True
-    return False
+def extract_rar(file_url, raw_dir_path):
+    filename = file_url.split('/')[-1]
+    file_path = os.path.join(raw_dir_path, filename)
+    with rarfile.RarFile(file_path) as rf:
+        rf.extractall(raw_dir_path)
 
 
-def download_with_retries(file_url, raw_dir_path, file_path, max_trials=5):
+def download_with_retries(file_url, raw_dir_path, max_trials=5):
+    filename = file_url.split('/')[-1]
+    file_path = os.path.join(raw_dir_path, filename)
     trials_left = max_trials
     while (not is_file_downloaded(file_url, raw_dir_path) or 
            not is_file_size_same(file_url, file_path)) and trials_left > 0:
-        
         print(f"Downloading file {file_path} (Trials left: {trials_left})...")
         download_from_url(file_url, file_path)
         trials_left -= 1
-        
     if trials_left == 0:
         raise Exception(f"Failed to download file {file_path} correctly after multiple attempts.")
 
@@ -90,10 +77,10 @@ def download_from_url(url, file_path):
         print("Trying again...")
 
 
-def download_dataset(config_path, raw_dir_path, filenames=None):                                                                                                                                                  
+def download_dataset(config_path, raw_dir_path, filenames=None):
     registers = read_registers_from_config(config_path)
     if filenames:
-        registers = [r for r in registers if r['filename'].strip() in filenames]
+        registers = [r for r in registers if (r['url']).split('/')[-1].strip() in filenames]
     for register in registers:
         download_file_from_register(raw_dir_path, register)
     print(f"Dataset downloaded to {raw_dir_path}")
@@ -123,7 +110,7 @@ def get_values_by_key(registers, key):
 
 def get_all_keys_and_values(registers):
     for key in registers[0].keys():
-        if key == 'filename':
+        if key == 'acquisition_file' or key == 'url':
             continue
         values = get_values_by_key(registers, key)
         print(f"{key}: {values}")
@@ -199,7 +186,7 @@ def prepare_segments_and_targets(segment_length, register, acquisition):
 
 
 def get_acquisition_data(raw_dir_path, channels_columns, load_acquisition_func, register):
-    file_path = os.path.join(raw_dir_path, register['filename'])
+    file_path = os.path.join(raw_dir_path, register['acquisition_file'])
     channels = get_channels_from_register(channels_columns, register)
     try:
         acquisition = load_acquisition_func(file_path, channels=channels)
