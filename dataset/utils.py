@@ -164,10 +164,16 @@ def get_X_y(registers, raw_dir_path, channels_columns, segment_length, load_acqu
     y_list = []
     if len(registers) == 0:
         return np.empty((0, segment_length, 1)), np.empty((0,), dtype='U10')
-    for register in registers:
-        segments, targets = extract_segments_and_targets(raw_dir_path, channels_columns, segment_length, load_acquisition_func, register)
-        X_list.append(segments)
-        y_list.append(targets)
+    for key_value in channels_columns.keys():
+        key, value = key_value.split(":")
+        value = eval(value)
+        filtered_registers = filter_registers_by_key_value_sequence(registers, [[key, value]])
+        actual_channel_columns = channels_columns[key_value]
+        # print(f"Loading data for registers with {key} in {value} using channels {actual_channel_columns}. Number of registers: {len(filtered_registers)}")
+        for register in filtered_registers: 
+            segments, targets = extract_segments_and_targets(raw_dir_path, actual_channel_columns, segment_length, load_acquisition_func, register)
+            X_list.append(segments)
+            y_list.append(targets)
     X = np.concatenate(X_list, axis=0)
     y = np.concatenate(y_list, axis=0)
     return X, y

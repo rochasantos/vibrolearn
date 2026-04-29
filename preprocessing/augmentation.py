@@ -46,11 +46,22 @@ def aggregate_load_acquistions(list_of_registers, condition, experimental_setup)
 
 def mix_severity_data(condition_registers, experimental_setup):
     segment_length=experimental_setup["segment_length"]
+    channels_columns=experimental_setup["channels_columns"]
     acquisitions = []
+    for key_value in channels_columns.keys():
+        key, value = key_value.split(":")
+        value = eval(value)
+        filtered_registers = filter_registers_by_key_value_sequence(condition_registers, [[key, value]])
+        actual_channel_columns = channels_columns[key_value]
+        for condition_register in filtered_registers:
+            acquisition = load_original_acquisitions(condition_register, actual_channel_columns, experimental_setup)
+            acquisitions.append(acquisition)
+    X, y = mix_acquisitions(condition_registers, segment_length, acquisitions)
+    return X, y
+    
+
+def mix_acquisitions(condition_registers, segment_length, acquisitions):
     X, y = [], []
-    for condition_register in condition_registers:
-        acquisition = load_original_acquisitions(condition_register, experimental_setup)
-        acquisitions.append(acquisition)
     for i in range(len(acquisitions)-1):
         for j in range(i+1, len(acquisitions)):
             mixed_acquisition = mix_two_acquisitions(acquisitions[i], acquisitions[j])
@@ -59,14 +70,13 @@ def mix_severity_data(condition_registers, experimental_setup):
             y.append(y_mix)
     X = np.concatenate(X, axis=0)
     y = np.concatenate(y, axis=0)
-    return X, y
+    return X,y
 
 
-def load_original_acquisitions(condition_register, experimental_setup):
+def load_original_acquisitions(condition_register, actual_channel_columns, experimental_setup):
     raw_dir_path=experimental_setup["raw_dir_path"]
-    channels_columns=experimental_setup["channels_columns"]
     load_acquisition_func=eval(experimental_setup["load_acquisition_func"])
-    acquisition = get_acquisition_data(raw_dir_path, channels_columns, load_acquisition_func, condition_register)
+    acquisition = get_acquisition_data(raw_dir_path, actual_channel_columns, load_acquisition_func, condition_register)
     return acquisition
 
 
