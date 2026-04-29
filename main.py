@@ -56,8 +56,8 @@ if __name__ == "__main__":
         experimental_setup = json.load(open(args.experimental_setup, "r"))
         list_of_scores = run_experiment(pipe, experimental_setup)
         experiment_name = path.basename(args.experimental_setup).split('.')[0]
-        output_file = f"results/{experiment_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
+        augmented_str = "aug" if args.augmentation else ""
+        output_file = f"results/{experiment_name}_{augmented_str}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
         save_scores(list_of_scores, output_file)
     elif not args.experimental_setup:
         print("No experimental setup specified, please provide one using the -e or --experimental_setup argument")
-
