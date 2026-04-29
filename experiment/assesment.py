@@ -1,3 +1,5 @@
+import json
+
 from dataset.utils import get_folds
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 
@@ -26,6 +28,7 @@ def holdout(model, experimental_setup, combination_key, test_fold_key, list_of_m
     train_filters, test_filter = train_test_split(folds, test_fold_key)
     model.train(train_filters, exp_setup)
     scores = model.evaluate(test_filter, list_of_metrics)
+    print_dict_of_scores(scores)
     return scores
 
 
@@ -66,3 +69,9 @@ def print_scores_list(scores):
     for key in scores:
         print(f"### {key}:")
         print_dict_of_scores(scores[key])
+
+
+def save_scores(scores, output_file):
+    with open(output_file, "w") as f:
+        json.dump(scores, f, indent=2, default=str)
+    print(f"Saved scores to: {output_file}")

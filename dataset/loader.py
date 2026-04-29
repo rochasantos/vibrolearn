@@ -17,7 +17,7 @@ def vanilla(registers, experimental_setup):
 
 
 def augmented(list_of_registers, experimental_setup):
-        X_aug, y_aug = get_agumented_data(list_of_registers, experimental_setup, 3)
+        X_aug, y_aug = get_agumented_data(list_of_registers, experimental_setup, repetitions=3)
         X_ori, y_ori = vanilla(list_of_registers, experimental_setup)
         X = np.concatenate([X_ori, X_aug], axis=0)
         y = np.concatenate([y_ori, y_aug], axis=0)

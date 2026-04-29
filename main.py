@@ -1,12 +1,14 @@
 import argparse
+from datetime import datetime
 import json
+from os import path
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 
 from estimators.pipeline import Pipeline
 from dataset.loader import augmented
-from experiment.assesment import print_scores_list, run_experiment
+from experiment.assesment import run_experiment, save_scores
 from feature.extraction import *
 
 
@@ -53,7 +55,9 @@ if __name__ == "__main__":
         print(f"Running experimental setup: {args.experimental_setup}")
         experimental_setup = json.load(open(args.experimental_setup, "r"))
         list_of_scores = run_experiment(pipe, experimental_setup)
-        print_scores_list(list_of_scores)
+        experiment_name = path.basename(args.experimental_setup).split('.')[0]
+        output_file = f"results/{experiment_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
+        save_scores(list_of_scores, output_file)
     elif not args.experimental_setup:
         print("No experimental setup specified, please provide one using the -e or --experimental_setup argument")
 

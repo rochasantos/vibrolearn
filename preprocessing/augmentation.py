@@ -2,7 +2,7 @@ from dataset.utils import filter_registers_by_key_value_sequence, get_acquisitio
 import numpy as np
 
 
-def get_agumented_data(list_of_registers, experimental_setup, repetitions):
+def get_agumented_data(list_of_registers, experimental_setup, repetitions=1):
     X, y = [], []
     for _ in range(repetitions):
         X_aug, y_aug = augment_acquisition(list_of_registers, experimental_setup)
