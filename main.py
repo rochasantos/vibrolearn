@@ -12,6 +12,22 @@ from experiment.assesment import run_experiment, save_scores
 from feature.extraction import *
 
 
+def save_experiment_results(args, pipeline):
+    results = {}
+    results["experiment_name"] = path.basename(args.experimental_setup).split('.')[0]
+    results["feature_extraction"] = pipeline.pipe.named_steps["feature_extraction"].__class__.__name__
+    results["classifier"] = pipeline.pipe.named_steps["classifier"].__class__.__name__
+    results["augmentation"] = args.augmentation
+    results["start_time"] = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    experimental_setup = json.load(open(args.experimental_setup, "r"))
+    list_of_scores = run_experiment(pipeline, experimental_setup)
+    results["scores"] = list_of_scores
+    results["end_time"] = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    augmented_str = "aug" if args.augmentation else ""
+    output_file = f"results/{results['experiment_name']}_{augmented_str}_{results['end_time']}.json"
+    save_scores(results, output_file)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run vibrolearn with the following options:")
     parser.add_argument("-a", "--augmentation", action="store_true", help="Whether to use data augmentation in the experiments")
@@ -53,11 +69,7 @@ if __name__ == "__main__":
 
     if args.experimental_setup:
         print(f"Running experimental setup: {args.experimental_setup}")
-        experimental_setup = json.load(open(args.experimental_setup, "r"))
-        list_of_scores = run_experiment(pipe, experimental_setup)
-        experiment_name = path.basename(args.experimental_setup).split('.')[0]
-        augmented_str = "aug" if args.augmentation else ""
-        output_file = f"results/{experiment_name}_{augmented_str}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
-        save_scores(list_of_scores, output_file)
+        save_experiment_results(args, pipe)
     elif not args.experimental_setup:
         print("No experimental setup specified, please provide one using the -e or --experimental_setup argument")
+
