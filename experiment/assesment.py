@@ -35,6 +35,7 @@ def holdout(model, experimental_setup, combination_key, test_fold_key, list_of_m
 def multiple_holdout(model, experimental_setup, list_of_metrics):
     scores = {}
     for combination_key in experimental_setup["setup"]:
+        print(f"Running holdout for combination: {combination_key}")
         scores[combination_key] = holdout(model, experimental_setup, combination_key,  test_fold_key="testing", list_of_metrics=list_of_metrics)
     return scores
 
@@ -44,6 +45,7 @@ def cross_validation(model, experimental_setup, list_of_metrics):
     for combination_key in experimental_setup["setup"]:
         folds = get_folds(experimental_setup, combination_key, experimental_setup["config_file"])
         for test_fold_key in folds:
+            print(f"Running cross-validation for combination: {combination_key}, fold: {test_fold_key}")
             fold_scores = holdout(model, experimental_setup, combination_key, test_fold_key, list_of_metrics)
             scores[test_fold_key] = fold_scores
     return scores
@@ -62,16 +64,15 @@ def run_experiment(model, experimental_setup):
 def print_dict_of_scores(scores):
     print(20 * "-")
     for metric_name, score in scores.items():
-        print(f"-- {metric_name} --\n{score}\n")
-
-
-def print_scores_list(scores):
-    for key in scores:
-        print(f"### {key}:")
-        print_dict_of_scores(scores[key])
+        print(f"-- {metric_name}:", end="\t")
+        if metric_name == "confusion_matrix":
+            print()
+        print(score)
+    print(10 * "# ")
 
 
 def save_scores(scores, output_file):
     with open(output_file, "w") as f:
         json.dump(scores, f, indent=2, default=str)
     print(f"Saved scores to: {output_file}")
+
