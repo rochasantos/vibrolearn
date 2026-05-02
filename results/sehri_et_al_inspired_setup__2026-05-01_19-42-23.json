@@ -1,0 +1,34 @@
+{
+  "experiment_name": "sehri_et_al_inspired_setup",
+  "feature_extraction": "WaveletFeatures",
+  "classifier": "RandomForestClassifier",
+  "augmentation": false,
+  "start_time": "2026-05-01_19-42-03",
+  "scores": {
+    "fold_0_0": {
+      "load_data_time": 0.052087732,
+      "training_time": 4.777893192,
+      "prediction_time": 1.09202393,
+      "accuracy_score": 0.2938464622168771,
+      "f1_macro": 0.1648232339004179,
+      "confusion_matrix": "[[  47    4 1615]\n [   0    0 1660]\n [ 244    0 1419]]"
+    },
+    "fold_0_1": {
+      "load_data_time": 0.051607084,
+      "training_time": 4.933356703,
+      "prediction_time": 1.160574887,
+      "accuracy_score": 0.34959694526941026,
+      "f1_macro": 0.21100526241845316,
+      "confusion_matrix": "[[1553    5  109]\n [1263   90   30]\n [1657    2    5]]"
+    },
+    "fold_0_2": {
+      "load_data_time": 0.051607084,
+      "training_time": 4.933356703,
+      "prediction_time": 1.160574887,
+      "accuracy_score": 0.4868,
+      "f1_macro": 0.45388925790055384,
+      "confusion_matrix": "[[ 268 1350   45]\n [  57 1412  198]\n [ 430  486  754]]"
+    }
+  },
+  "end_time": "2026-05-01_19-42-23"
+}
