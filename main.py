@@ -10,7 +10,7 @@ from estimators.pipeline import Pipeline
 from dataset.loader import augmented
 from experiment.assesment import run_experiment, save_scores
 from feature.extraction import *
-from experiment.compile_results import compile_results, compile_results_across_folds_and_domains
+from experiment.compile_results import compile_results, compile_results_across_folds_and_domains, generate_paired_augmentation_boxplots
 
 
 def save_experiment_results(args, pipeline):
@@ -82,4 +82,6 @@ if __name__ == "__main__":
         print(f"Compiled results saved to: {output_file}")
         output_file = compile_results_across_folds_and_domains(args.results_directory)
         print(f"Compiled results across folds and domains saved to: {output_file}")
+        output_file = generate_paired_augmentation_boxplots(args.results_directory)
+        print(f"Generated paired augmentation box plots across folds and domains saved to: {output_file}")
 
