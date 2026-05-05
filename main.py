@@ -1,8 +1,16 @@
-from dataset.cwru.rauber_loca_et_al import single_channel_X_y_DE_FE_12k
-from dataset.cwru.sehri_et_al import single_channel_X_y_DE_FE_48k
-from assesment.crossvalidation import performance
-from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
-from estimator.WPRF import WPRF as Estimator
+import argparse
+from datetime import datetime
+import json
+from os import path
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+
+from estimators.pipeline import Pipeline
+from dataset.loader import augmented
+from experiment.assesment import run_experiment, save_scores
+from feature.extraction import *
+from experiment.compile_results import compile_results, compile_results_across_folds_and_domains, generate_paired_augmentation_boxplots
 
 
 model = Estimator()
@@ -27,13 +35,14 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--feature_extraction", type=str, help="The feature extraction method to use for the experiments (choices: FlattenFeatures, StatisticalFeatures, HeterogeneousFeatures, WaveletFeatures)")
     parser.add_argument("-c", "--classifier", type=str, help="The classifier to use for the experiments (choices: RandomForestClassifier, KNeighborsClassifier)")
     parser.add_argument("-e", "--experimental_setup", type=str, help="The experimental setup file to run (mandatory)")
+    parser.add_argument("-r", "--results_directory", type=str, nargs="?", const="results/", help="The directory to compile the results from the experiments (default: results/)")
 
 
     args = parser.parse_args()
     
     if not any(vars(args).values()):
         parser.print_help()
-
+    
 
     steps = []
 
@@ -63,6 +72,16 @@ if __name__ == "__main__":
     if args.experimental_setup:
         print(f"Running experimental setup: {args.experimental_setup}")
         save_experiment_results(args, pipe)
-    elif not args.experimental_setup:
+    elif not args.experimental_setup and not args.results_directory:
         print("No experimental setup specified, please provide one using the -e or --experimental_setup argument")
+
+
+    if args.results_directory:
+        print(f"Compiling results from directory: {args.results_directory}")
+        output_file = compile_results(args.results_directory)
+        print(f"Compiled results saved to: {output_file}")
+        output_file = compile_results_across_folds_and_domains(args.results_directory)
+        print(f"Compiled results across folds and domains saved to: {output_file}")
+        output_file = generate_paired_augmentation_boxplots(args.results_directory)
+        print(f"Generated paired augmentation box plots across folds and domains saved to: {output_file}")
 
