@@ -13,20 +13,20 @@ from feature.extraction import *
 from experiment.compile_results import compile_results, compile_results_across_folds_and_domains, generate_paired_augmentation_boxplots
 
 
-model = Estimator()
-
-def f1_macro(y_true, y_pred):
-    return f1_score(y_true, y_pred, average='macro')
-list_of_metrics = [accuracy_score, f1_macro, confusion_matrix]
-
-
-def run(model, verbose=False):
-    combination = 0
-    segment_length = 2048
-    list_of_X_y = single_channel_X_y_DE_FE_48k(combination, segment_length)
-    scores = performance(model, list_of_X_y, list_of_metrics=list_of_metrics, 
-                         holdout_indices=[[0, 1, 2, 3, 4, 5, 6, 7], [8]], verbose=verbose)
-    return scores
+def save_experiment_results(args, pipeline):
+    results = {}
+    results["experiment_name"] = path.basename(args.experimental_setup).split('.')[0]
+    results["feature_extraction"] = pipeline.pipe.named_steps["feature_extraction"].__class__.__name__
+    results["classifier"] = pipeline.pipe.named_steps["classifier"].__class__.__name__
+    results["augmentation"] = args.augmentation
+    results["start_time"] = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    experimental_setup = json.load(open(args.experimental_setup, "r"))
+    list_of_scores = run_experiment(pipeline, experimental_setup)
+    results["scores"] = list_of_scores
+    results["end_time"] = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    augmented_str = "aug" if args.augmentation else ""
+    output_file = f"results/{results['experiment_name']}_{augmented_str}_{results['end_time']}.json"
+    save_scores(results, output_file)
 
 
 if __name__ == "__main__":
@@ -84,4 +84,3 @@ if __name__ == "__main__":
         print(f"Compiled results across folds and domains saved to: {output_file}")
         output_file = generate_paired_augmentation_boxplots(args.results_directory)
         print(f"Generated paired augmentation box plots across folds and domains saved to: {output_file}")
-
