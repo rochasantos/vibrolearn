@@ -1,0 +1,18 @@
+{
+  "experiment_name": "sehri_et_al_papers_setup",
+  "feature_extraction": "WaveletFeatures",
+  "classifier": "RandomForestClassifier",
+  "augmentation": false,
+  "start_time": "2026-04-30_20-02-52",
+  "scores": {
+    "holdout_0": {
+      "load_data_time": 0.076905742,
+      "training_time": 5.075422117,
+      "prediction_time": 0.157311852,
+      "accuracy_score": 0.6550279329608939,
+      "f1_macro": 0.6531655421572701,
+      "confusion_matrix": "[[156  82   0]\n [ 29 194  15]\n [ 49  72 119]]"
+    }
+  },
+  "end_time": "2026-04-30_20-02-58"
+}

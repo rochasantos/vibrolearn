@@ -1,0 +1,181 @@
+{
+    "config_file": "dataset/cwru/config.csv",
+    "raw_dir_path": "raw_data/cwru",
+    "channels_columns": {
+        "faulty_bearing:['Drive End', 'None']": ["DE"]
+    },
+    "segment_length": 1024,
+    "load_acquisition_func": "load_matlab_acquisition",
+    "type": "train_test_split",
+    "setup": { 
+        "domains_1": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007", "0.014"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.021"], "load": ["0"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["0"] }
+            ]
+        }, 
+        "domains_2": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007", "0.014"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.021"], "load": ["1"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["1"] }
+            ]
+        }, 
+        "domains_3": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007", "0.014"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.021"], "load": ["2"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["2"] }
+            ]
+        }, 
+        "domains_4": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007", "0.014"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.021"], "load": ["3"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["3"] }
+            ]
+        },
+        "domains_5": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.014", "0.021"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007"], "load": ["0"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["0"] }
+            ]
+        },
+        "domains_6": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.014", "0.021"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007"], "load": ["0"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["0"] }
+            ]
+        },
+        "domains_7": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.014", "0.021"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007"], "load": ["0"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["0"] }
+            ]
+        },
+        "domains_8": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.014", "0.021"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007"], "load": ["0"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["0"] }
+            ]
+        },
+        "domains_9": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007", "0.021"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.014"], "load": ["0"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["0"] }
+            ]
+        },
+        "domains_10": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007", "0.021"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.014"], "load": ["1"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["1"] }
+            ]
+        },
+        "domains_11": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007", "0.021"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.014"], "load": ["2"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["2"] }
+            ]
+        },
+        "domains_12": {
+            "training": [ 
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.007", "0.021"],  "sample_rate": ["48000"], 
+                    "prlz": ["None", "6"] },
+                {   "condition":   ["Normal"] }
+            ],
+            "testing": [
+                {   "condition":   ["Inner Race", "Outer Race", "Ball"], 
+                    "severity":    ["0.014"], "load": ["3"], 
+                    "sample_rate": ["48000"], "prlz": ["None", "6"]},
+                {   "condition":   ["Normal"], "load": ["3"] }
+            ]
+        }
+    }
+}
+
