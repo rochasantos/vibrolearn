@@ -222,40 +222,10 @@ def get_fold(fold_filters, config_file):
     return fold
 
 
-<<<<<<< HEAD
-def merge_X_y_from_lists(list1, list2):
-    merged_list = []
-    for fold_from_0, fold_from_1 in zip(list1, list2):
-        X_all = np.concatenate([fold_from_0[0], fold_from_1[0]], axis=0)
-        y_all = np.concatenate([fold_from_0[1], fold_from_1[1]], axis=0)
-        merged_list.append((X_all, y_all))
-    return merged_list
-
-
-def get_train_test_split(list_of_X_y, test_fold_index, holdout_indices=None):
-    # Hold-out mode
-    if holdout_indices:
-        X_test, y_test = concatenate_data([list_of_X_y[i] for i in holdout_indices[1]])
-        X_train, y_train = concatenate_data([list_of_X_y[i] for i in holdout_indices[0]])
-        return X_train, y_train, X_test, y_test
-    # K-Fold Cross-validation mode
-    X_test, y_test = list_of_X_y[test_fold_index]
-    X_train, y_train = concatenate_data([list_of_X_y[i] for i in range(len(list_of_X_y)) if i != test_fold_index])
-    return X_train, y_train, X_test, y_test
-
-
-def get_list_of_X_y(list_of_folds, raw_dir_path, channels_columns, segment_length, load_acquisition_func):
-    list_of_X_y = []
-    for fold in list_of_folds:
-        X, y = get_X_y(fold, raw_dir_path=raw_dir_path, channels_columns=channels_columns, segment_length=segment_length, load_acquisition_func=load_acquisition_func)
-        list_of_X_y.append((X, y))
-    return list_of_X_y
-=======
 def get_folds(experimental_setup, combination_key, config_file):
     folds = {}
     for fold_key in experimental_setup["setup"][combination_key]:
         fold = get_fold(experimental_setup["setup"][combination_key][fold_key], config_file=config_file)
         folds[fold_key] = fold
     return folds
->>>>>>> upstream/dev
 
