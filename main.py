@@ -7,6 +7,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 
 from estimators.pipeline import Pipeline
+from estimators.cnn_lstm import CNNLSTMClassifier
 from dataset.loader import augmented
 from experiment.assesment import run_experiment, save_scores
 from feature.extraction import *
@@ -32,20 +33,17 @@ def save_experiment_results(args, pipeline):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run vibrolearn with the following options:")
     parser.add_argument("-a", "--augmentation", action="store_true", help="Whether to use data augmentation in the experiments")
-    parser.add_argument("-f", "--feature_extraction", type=str, help="The feature extraction method to use for the experiments (choices: FlattenFeatures, StatisticalFeatures, HeterogeneousFeatures, WaveletFeatures)")
-    parser.add_argument("-c", "--classifier", type=str, help="The classifier to use for the experiments (choices: RandomForestClassifier, KNeighborsClassifier)")
+    parser.add_argument("-f", "--feature_extraction", type=str, help="The feature extraction method to use for the experiments (choices: FlattenFeatures, StatisticalFeatures, HeterogeneousFeatures, WaveletFeatures, RMSFeatures)")
+    parser.add_argument("-c", "--classifier", type=str, help="The classifier to use for the experiments (choices: RandomForestClassifier, KNeighborsClassifier, CNNLSTMClassifier)")
     parser.add_argument("-e", "--experimental_setup", type=str, help="The experimental setup file to run (mandatory)")
     parser.add_argument("-r", "--results_directory", type=str, nargs="?", const="results/", help="The directory to compile the results from the experiments (default: results/)")
-
 
     args = parser.parse_args()
     
     if not any(vars(args).values()):
         parser.print_help()
     
-
     steps = []
-
 
     featextraction_method = WaveletFeatures()
     if args.feature_extraction:
@@ -53,28 +51,33 @@ if __name__ == "__main__":
     print(f"Using feature extraction method: {featextraction_method.__class__.__name__}")
     steps.append(("feature_extraction", featextraction_method))
 
-
     model = RandomForestClassifier()
     if args.classifier:
-        model = eval(args.classifier)()
+        if args.classifier == "CNNLSTMClassifier":
+            model = CNNLSTMClassifier(
+                epochs=100,
+                batch_size=64,
+                learning_rate=0.001,
+                device="cuda",
+                verbose=True
+            )
+        else:
+            model = eval(args.classifier)()
+
     print(f"Using classifier: {model.__class__.__name__}")
     steps.append(("classifier", model))
 
-
     pipe = Pipeline(steps)
-
 
     if args.augmentation:
         print("Using data augmentation")
         pipe.train_loader = augmented
-
 
     if args.experimental_setup:
         print(f"Running experimental setup: {args.experimental_setup}")
         save_experiment_results(args, pipe)
     elif not args.experimental_setup and not args.results_directory:
         print("No experimental setup specified, please provide one using the -e or --experimental_setup argument")
-
 
     if args.results_directory:
         print(f"Compiling results from directory: {args.results_directory}")
@@ -84,3 +87,4 @@ if __name__ == "__main__":
         print(f"Compiled results across folds and domains saved to: {output_file}")
         output_file = generate_paired_augmentation_boxplots(args.results_directory)
         print(f"Generated paired augmentation box plots across folds and domains saved to: {output_file}")
+        

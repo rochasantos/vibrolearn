@@ -1,4 +1,5 @@
-from sklearn.base import BaseEstimator, ClassifierMixin
+import numpy as np
+from sklearn.base import BaseEstimator, ClassifierMixin, TransformerMixin
 from feature.ConcatenateFeatures import ConcatenateFeatures
 from feature.statistical_time import StatisticalTime
 from feature.statistical_frequency import StatisticalFrequency
@@ -56,3 +57,15 @@ class WaveletFeatures(BaseEstimator, ClassifierMixin):
     def transform(self, X):
         return self.features.transform(X)
     
+
+
+class RMSFeatures(BaseEstimator, TransformerMixin):
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X = np.asarray(X, dtype=np.float32)
+        rms = np.sqrt(np.mean(X ** 2, axis=1, keepdims=True))
+        X_normalized = X / (rms + 1e-8)
+        return X_normalized
